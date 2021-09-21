@@ -1,0 +1,45 @@
+using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+// Token: 0x02000034 RID: 52
+[Serializable]
+public class rshwFormat
+{
+    // Token: 0x17000008 RID: 8
+    // (get) Token: 0x0600011B RID: 283 RVA: 0x000100BC File Offset: 0x0000E2BC
+    // (set) Token: 0x0600011C RID: 284 RVA: 0x000100C4 File Offset: 0x0000E2C4
+    public byte[] audioData { get; set; }
+
+    // Token: 0x17000009 RID: 9
+    // (get) Token: 0x0600011D RID: 285 RVA: 0x000100CD File Offset: 0x0000E2CD
+    // (set) Token: 0x0600011E RID: 286 RVA: 0x000100D5 File Offset: 0x0000E2D5
+    public int[] signalData { get; set; }
+
+    // Token: 0x1700000A RID: 10
+    // (get) Token: 0x0600011F RID: 287 RVA: 0x000100DE File Offset: 0x0000E2DE
+    // (set) Token: 0x06000120 RID: 288 RVA: 0x000100E6 File Offset: 0x0000E2E6
+    public byte[] videoData { get; set; }
+
+    // Token: 0x06000121 RID: 289 RVA: 0x000100F0 File Offset: 0x0000E2F0
+    public void Save(string filePath)
+    {
+        BinaryFormatter binaryFormatter = new BinaryFormatter();
+        using (FileStream fileStream = File.Open(filePath, FileMode.Create))
+        {
+            binaryFormatter.Serialize(fileStream, this);
+        }
+    }
+
+    // Token: 0x06000122 RID: 290 RVA: 0x00010130 File Offset: 0x0000E330
+    public static rshwFormat ReadFromFile(string filepath)
+    {
+        BinaryFormatter binaryFormatter = new BinaryFormatter();
+        rshwFormat result;
+        using (FileStream fileStream = File.OpenRead(filepath))
+        {
+            result = (rshwFormat)binaryFormatter.Deserialize(fileStream);
+        }
+        return result;
+    }
+}

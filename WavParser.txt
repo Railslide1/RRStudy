@@ -1,0 +1,126 @@
+```
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+// Token: 0x02000062 RID: 98
+public static class OpenWavParser
+{
+	// Token: 0x06000227 RID: 551 RVA: 0x000181E8 File Offset: 0x000163E8
+	public static AudioClip ByteArrayToAudioClip(byte[] wavFile, string name = "", bool stream = false)
+	{
+		if (!OpenWavParser.IsCompatible(wavFile))
+		{
+			Debug.LogError("[OpenWavParser.ByteArrayToAudioClip] Format not supported.");
+			return null;
+		}
+		int num = BitConverter.ToInt32(wavFile, 16);
+		int num2 = (int)BitConverter.ToInt16(wavFile, 20);
+		int channels = (int)BitConverter.ToInt16(wavFile, 22);
+		int frequency = BitConverter.ToInt32(wavFile, 24);
+		int num3 = (int)BitConverter.ToInt16(wavFile, 34);
+		int num4 = 20 + num;
+		for (int i = num4; i < wavFile.Length; i++)
+		{
+			if (wavFile[i] == 100 && wavFile[i + 1] == 97 && wavFile[i + 2] == 116 && wavFile[i + 3] == 97)
+			{
+				num4 = i + 4;
+				break;
+			}
+		}
+		int num5 = BitConverter.ToInt32(wavFile, num4);
+		num4 += 4;
+		int num6 = num3 / 8;
+		int num7 = num5 / num6;
+		if (num2 == 1)
+		{
+			float[] array = new float[num7];
+			for (int j = 0; j < num7; j++)
+			{
+				int startIndex = num4 + j * num6;
+				float num8 = (float)BitConverter.ToInt16(wavFile, startIndex) / 32768f;
+				array[j] = num8;
+			}
+			AudioClip audioClip = AudioClip.Create(name, num7, channels, frequency, stream);
+			audioClip.SetData(array, 0);
+			return audioClip;
+		}
+		Debug.LogError("[OpenWavParser.ByteArrayToAudioClip] Compressed wav format not supported.");
+		return null;
+	}
+
+	// Token: 0x06000228 RID: 552 RVA: 0x000182FC File Offset: 0x000164FC
+	public static byte[] AudioClipToByteArray(AudioClip clip)
+	{
+		float[] array = new float[clip.samples];
+		clip.GetData(array, 0);
+		List<byte> list = new List<byte>();
+		list.AddRange(new byte[]
+		{
+			82,
+			73,
+			70,
+			70
+		});
+		list.AddRange(BitConverter.GetBytes(array.Length * 2 + 44 - 8));
+		list.AddRange(new byte[]
+		{
+			87,
+			65,
+			86,
+			69
+		});
+		list.AddRange(new byte[]
+		{
+			102,
+			109,
+			116,
+			32
+		});
+		list.AddRange(BitConverter.GetBytes(16));
+		list.AddRange(BitConverter.GetBytes(1));
+		list.AddRange(BitConverter.GetBytes((ushort)clip.channels));
+		list.AddRange(BitConverter.GetBytes(clip.frequency));
+		list.AddRange(BitConverter.GetBytes(clip.frequency * clip.channels * 2));
+		list.AddRange(BitConverter.GetBytes((ushort)(clip.channels * 2)));
+		list.AddRange(BitConverter.GetBytes(16));
+		list.AddRange(new byte[]
+		{
+			100,
+			97,
+			116,
+			97
+		});
+		list.AddRange(BitConverter.GetBytes(array.Length * 2));
+		for (int i = 0; i < array.Length; i++)
+		{
+			short value = (short)(array[i] * 32768f);
+			list.AddRange(BitConverter.GetBytes(value));
+		}
+		return list.ToArray();
+	}
+
+	// Token: 0x06000229 RID: 553 RVA: 0x00018448 File Offset: 0x00016648
+	public static bool IsCompatible(byte[] wavFile)
+	{
+		if (wavFile.Length > 12)
+		{
+			byte[] array = new byte[4];
+			Buffer.BlockCopy(wavFile, 0, array, 0, array.Length);
+			string a = OpenWavParser.ByteArrayToString(array);
+			Buffer.BlockCopy(wavFile, 8, array, 0, array.Length);
+			string a2 = OpenWavParser.ByteArrayToString(array);
+			return a == "RIFF" && a2 == "WAVE";
+		}
+		return false;
+	}
+
+	// Token: 0x0600022A RID: 554 RVA: 0x000184A4 File Offset: 0x000166A4
+	private static string ByteArrayToString(byte[] content)
+	{
+		char[] array = new char[content.Length];
+		content.CopyTo(array, 0);
+		return new string(array);
+	}
+}
+```

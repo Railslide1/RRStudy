@@ -1,0 +1,100 @@
+using System;
+
+// Token: 0x02000030 RID: 48
+[Serializable]
+public class ShowtapeSegment
+{
+    // Token: 0x0400010A RID: 266
+    public ShowtapeSegment.SignalQ signalQuality = ShowtapeSegment.SignalQ.Complete;
+
+    // Token: 0x0400010B RID: 267
+    public ShowtapeSegment.AudioQ audioQuality = ShowtapeSegment.AudioQ.ReelQuality;
+
+    // Token: 0x0400010C RID: 268
+    public ShowtapeSegment.VideoQ videoQuality;
+
+    // Token: 0x0400010D RID: 269
+    public ShowtapeSegment.ShowQ showVersion;
+
+    // Token: 0x0400010E RID: 270
+    public string segmentNumber;
+
+    // Token: 0x0400010F RID: 271
+    public string showName;
+
+    // Token: 0x04000110 RID: 272
+    public string showLength;
+
+    // Token: 0x04000111 RID: 273
+    public string filePath;
+
+    // Token: 0x02000098 RID: 152
+    public enum ShowQ
+    {
+        // Token: 0x04000468 RID: 1128
+        Original,
+        // Token: 0x04000469 RID: 1129
+        Edited,
+        // Token: 0x0400046A RID: 1130
+        Duplicate,
+        // Token: 0x0400046B RID: 1131
+        DuplicateEdited,
+        // Token: 0x0400046C RID: 1132
+        NewSignals,
+        // Token: 0x0400046D RID: 1133
+        DuplicateNewSignals
+    }
+
+    // Token: 0x02000099 RID: 153
+    public enum AudioQ
+    {
+        // Token: 0x0400046F RID: 1135
+        None,
+        // Token: 0x04000470 RID: 1136
+        Unobtained,
+        // Token: 0x04000471 RID: 1137
+        Incomplete,
+        // Token: 0x04000472 RID: 1138
+        Corrupted,
+        // Token: 0x04000473 RID: 1139
+        LowQuality,
+        // Token: 0x04000474 RID: 1140
+        ReelQuality,
+        // Token: 0x04000475 RID: 1141
+        MasteredAudio
+    }
+
+    // Token: 0x0200009A RID: 154
+    public enum VideoQ
+    {
+        // Token: 0x04000477 RID: 1143
+        None,
+        // Token: 0x04000478 RID: 1144
+        Unobtained,
+        // Token: 0x04000479 RID: 1145
+        Incomplete,
+        // Token: 0x0400047A RID: 1146
+        Corrupted,
+        // Token: 0x0400047B RID: 1147
+        LowQuality,
+        // Token: 0x0400047C RID: 1148
+        ReelQuality,
+        // Token: 0x0400047D RID: 1149
+        MasteredVideo
+    }
+
+    // Token: 0x0200009B RID: 155
+    public enum SignalQ
+    {
+        // Token: 0x0400047F RID: 1151
+        None,
+        // Token: 0x04000480 RID: 1152
+        Unobtained,
+        // Token: 0x04000481 RID: 1153
+        Incomplete,
+        // Token: 0x04000482 RID: 1154
+        Corrupted,
+        // Token: 0x04000483 RID: 1155
+        Complete
+    }
+}
